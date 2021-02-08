@@ -1,8 +1,8 @@
 import './App.css';
 import {Switch, Route } from 'react-router-dom';  
 import Home from './pages/Home';
-import Products from './pages/Products';
 import Product from './pages/Product';
+import Products from './pages/Products';
 import Error from './pages/Error';
 import Navbar from './components/Navbar';
 

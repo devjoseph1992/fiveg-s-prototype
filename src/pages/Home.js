@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Banner from '../components/Banner';
 import Services from '../components/Services';
 import Hero from './../components/Hero';
-import FeaturedProduct from '../components/FeaturedProducts'
+import FeaturedProduct from '../components/FeaturedProducts';
 
 export default function Home() {
   return (

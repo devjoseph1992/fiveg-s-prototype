@@ -36,9 +36,16 @@ class ProductProvider extends Component {
     return tempItems
   }
 
+  getProduct = (slug) => {
+    let tempProducts = [...this.state.products];
+    const product = tempProducts.find((product => product.slug ===  slug));
+    return product;
+  }
+
   render() {
     return (
-      <ProductContext.Provider value={{ ...this.state}}>
+      <ProductContext.Provider value={{ ...this.state, 
+      getProduct:this.getProduct}}>
         {this.props.children}
       </ProductContext.Provider>
     );
