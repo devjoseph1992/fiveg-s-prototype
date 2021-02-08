@@ -13,7 +13,7 @@ export default function Product({product}) {
         <div className='price-top'>
           <h6>P{price}</h6>
         </div>
-        <Link to={`product/${slug}`} className='btn-primary room-link'>Featured Product</Link>
+        <Link to={`/product/${slug}`} className='btn-primary room-link'>Featured</Link>
       </div>
       <p className='room-info'>{name}</p>
     </article>

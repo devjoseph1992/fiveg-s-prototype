@@ -9,7 +9,16 @@ class ProductProvider extends Component {
     products:[],
     sortedProducts:[],
     featuredProducts:[],
-    loading:true
+    loading:true,
+    type: 'all',
+    capacity: 1,
+    price: 0,
+    minPrice: 0,
+    maxPrice: 0,
+    minSize: 0,
+    maxSize: 0,
+    breakfast: false,
+    pets: false
   };
   // getData
 
@@ -17,11 +26,16 @@ class ProductProvider extends Component {
     // this.getData
     let products = this.formatData(items);
     let featuredProducts = products.filter(product => product.featured === true);
+    let maxPrice = Math.max(...products.map(item => item.price));
+    let maxSize = Math.max(...products.map(item => item.size));
     this.setState({
       products,
       featuredProducts,
       sortedProducts:products,
-      loading: false
+      loading: false,
+      price: maxPrice,
+      maxPrice,
+      maxSize
     })
   }
 
@@ -41,11 +55,55 @@ class ProductProvider extends Component {
     const product = tempProducts.find((product => product.slug ===  slug));
     return product;
   }
+  handleChange = event => {
+    const target = event.target
+    const value = target.type === 'checkbox' ? 
+    target.checked : target.value
+    const name = event.target.name
+    this.setState({
+      [name] : value
+    },this.filterProducts)
+  }
+  filterProducts = () => {
+    let{
+      products, type, capacity, price, minSize, maxSize, breakfast,pets
+    } = this.state
+    // all the products
+    let tempProducts = [...products];
+    // transform values
+    capacity = parseInt(capacity)
+    price = parseInt(price)
+
+    //filter by type
+    if(type !== 'all') {
+      tempProducts = tempProducts.filter(product => product.type === type)
+    }
+    // filter by capacity
+    if(capacity !== 1){
+      tempProducts =  tempProducts.filter(product => product.capacity >= capacity)
+    }
+    // filter by price
+    tempProducts = tempProducts.filter(product => product.price <= price)
+    // filter by size
+    tempProducts = tempProducts.filter(product => product.size >= minSize && product.size <= maxSize )
+    // filter by breakfast
+    if(breakfast) {
+      tempProducts = tempProducts.filter(product => product.breakfast === true)
+    }
+    // filter by breakfast
+    if(pets) {
+      tempProducts = tempProducts.filter(product => product.pets === true)
+    }
+    // change state
+    this.setState({
+      sortedProducts:tempProducts
+    })
+  }
 
   render() {
     return (
       <ProductContext.Provider value={{ ...this.state, 
-      getProduct:this.getProduct}}>
+      getProduct:this.getProduct, handleChange:this.handleChange}}>
         {this.props.children}
       </ProductContext.Provider>
     );
@@ -53,5 +111,14 @@ class ProductProvider extends Component {
 }
 
 const ProductConsumer = ProductContext.Consumer;
+
+// High order Component
+export function withProductConsumer(Component){
+  return function ConsumerWrapper(props) {
+    return <ProductConsumer>
+      {value => <Component {...props} context={value}/>}
+    </ProductConsumer>
+  }
+}
 
 export {ProductProvider, ProductConsumer,ProductContext};
