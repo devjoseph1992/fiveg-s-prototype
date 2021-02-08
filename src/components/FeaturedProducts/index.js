@@ -1,19 +1,24 @@
 import React, { Component } from 'react';
 import { ProductContext } from '../../context'
 import Loading from '../Loading';
+import Product from '../Product';
+import Title from '../Title';
 import './style.css';
 
 export default class FeaturedProduct extends Component {
   static contextType = ProductContext
   render() {
-    const {featuredProducts : products } =this.context
-    console.log(products);
+    let { loading, featuredProducts : products } =this.context;
+    products = products.map(product => {
+      return <Product key={product.id} product={product} />
+    })
     return (
-      <div>
-        hello FeaturedProduct
-
-        <Loading/>
-      </div>
+      <section className='featured-rooms'>
+        <Title title='Featured Product'/>
+        <div className='featured-rooms-center'>
+          {loading ? <Loading/> : products}
+        </div>
+      </section>
     )
   }
 }
